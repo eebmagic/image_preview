@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import coloring
-from tqdm import tqdm
+import time
 
 color_definitions = {
     'Black':        ((0, 0, 0), "\033[30m"),
@@ -35,11 +35,15 @@ def prev(im_file, size):
     assert type(h), int
 
     # Read and reshape image
+    load_start = time.time()
     im = cv2.resize(cv2.imread(im_file), size)
     out_im = im.copy()
     out_str = ""
+    load_durr = time.time() - load_start
+    print(f"{load_durr = }")
 
-    for y in tqdm(range(len(im))):
+    iter_start = time.time()
+    for y in range(len(im)):
         for x in range(len(im[y])):
             pixel = list(im[y][x])
             min_dist = float('inf')
@@ -57,12 +61,13 @@ def prev(im_file, size):
             # Add to color
             out_im[y,x] = min_value
             out_str += coloring.color("█", color_definitions[min_name][1])
+    iter_durr = time.time() - iter_start
+    print(f"{iter_durr = }")
 
     return out_str
 
 
 if __name__ == "__main__":
-    import time
     start = time.time()
     # Get size of the terminal
     import os
@@ -71,7 +76,14 @@ if __name__ == "__main__":
     except OSError:
         w, h = 20, 20
 
+    import sys
+    if len(sys.argv) > 1:
+        filename = sys.argv[-1]
+    else:
+        filename = "./images/sample.png"
+
     pref_size = (w, h-2)
-    print(prev("sample.png", pref_size))
-    duration = time.time() - start
+    print(prev(filename, pref_size))
+    prev(filename, pref_size)
+    duration = (time.time() - start) * 100
     print(f"{duration = }")
