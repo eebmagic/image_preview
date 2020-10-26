@@ -3,25 +3,6 @@ import cv2
 import coloring
 from tqdm import tqdm
 
-bad_color_definitions = {
-    'Black':        (0, 0, 0),
-    'Red':          (151, 4, 12),
-    'Green':        (23, 164, 26),
-    'Yellow':       (153, 152, 29),
-    'Blue':         (5, 22, 175),
-    'Magenta':      (175, 25, 175),
-    'Cyan':         (25, 165, 175),
-    'LightGray':    (191, 191, 191),
-    'DarkGray':     (105, 105, 105),
-    'LightRed':     (227, 10, 23),
-    'LightGreen':   (33, 215, 38),
-    'LightYellow':  (229, 228, 49),
-    'LightBlue':    (11, 36, 251),
-    'LightMagenta': (227, 35, 227),
-    'LightCyan':    (39, 229, 228),
-    'White':        (230, 229, 230)
-}
-
 color_definitions = {
     'Black':        (0, 0, 0),
     'Red':          (12, 4, 151),
@@ -74,25 +55,19 @@ def prev(im_file, size):
 
     # Read and reshape image
     im = cv2.resize(cv2.imread(im_file), size)
-
-    # cv2.imshow("sample", im)
-    # cv2.waitKey(0)  
-    # cv2.destroyAllWindows()
-
     out_im = im.copy()
     out_str = ""
 
     for y in tqdm(range(len(im))):
         for x in range(len(im[y])):
             pixel = list(im[y][x])
-            # print(pixel)
             min_dist = float('inf')
             min_value = None
             min_name = None
+
             for name in color_definitions:
                 value = color_definitions[name]
                 d = dist(pixel, value)
-                # print(d, pixel, value)
                 if d < min_dist:
                     min_dist = d
                     min_value = value
@@ -102,31 +77,7 @@ def prev(im_file, size):
             out_im[y,x] = min_value
             out_str += coloring.color("█", color_chars[min_name])
 
-            # Print checks
-            # print(pixel, min_value)
-            # print(f"setting {(y, x)} to {min_value}")
-            # print(f"{out_im[y,x] = }")
-
-
-    # Print finishing checks
-    # print(list(out_im)[:1])
-    # print(im.shape)
-    # print(out_im.shape)
-    # print(out_str)
-    # cv2.imshow("out_im", out_im)
-    # cv2.imshow("original", im)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
     return out_str
-
-
-def rect(size):
-    r = "█"
-    w, h = size
-    arr = [r*w for _ in range(h)]
-    out = '\n'.join(arr)
-    return out
 
 
 if __name__ == "__main__":
