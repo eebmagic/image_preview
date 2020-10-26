@@ -4,41 +4,22 @@ import coloring
 from tqdm import tqdm
 
 color_definitions = {
-    'Black':        (0, 0, 0),
-    'Red':          (12, 4, 151),
-    'Green':        (26, 164, 23),
-    'Yellow':       (29, 152, 153),
-    'Blue':         (175, 22, 5),
-    'Magenta':      (175, 25, 175),
-    'Cyan':         (175, 165, 25),
-    'LightGray':    (191, 191, 191),
-    'DarkGray':     (105, 105, 105),
-    'LightRed':     (23, 10, 227),
-    'LightGreen':   (38, 215, 33),
-    'LightYellow':  (49, 228, 229),
-    'LightBlue':    (251, 36, 11),
-    'LightMagenta': (227, 35, 227),
-    'LightCyan':    (228, 229, 39),
-    'White':        (230, 229, 230)
-}
-
-color_chars = {
-    'Black':        "\033[30m",
-    'Red':          "\033[31m",
-    'Green':        "\033[32m",
-    'Yellow':       "\033[33m",
-    'Blue':         "\033[34m",
-    'Magenta':      "\033[35m",
-    'Cyan':         "\033[36m",
-    'LightGray':    "\033[37m",
-    'DarkGray':     "\033[90m",
-    'LightRed':     "\033[91m",
-    'LightGreen':   "\033[92m",
-    'LightYellow':  "\033[93m",
-    'LightBlue':    "\033[94m",
-    'LightMagenta': "\033[95m",
-    'LightCyan':    "\033[96m",
-    'White':        "\033[97m",
+    'Black':        ((0, 0, 0), "\033[30m"),
+    'Red':          ((12, 4, 151), "\033[31m"),
+    'Green':        ((26, 164, 23), "\033[32m"),
+    'Yellow':       ((29, 152, 153), "\033[33m"),
+    'Blue':         ((175, 22, 5), "\033[34m"),
+    'Magenta':      ((175, 25, 175), "\033[35m"),
+    'Cyan':         ((175, 165, 25), "\033[36m"),
+    'LightGray':    ((191, 191, 191), "\033[37m"),
+    'DarkGray':     ((105, 105, 105), "\033[90m"),
+    'LightRed':     ((23, 10, 227), "\033[91m"),
+    'LightGreen':   ((38, 215, 33), "\033[92m"),
+    'LightYellow':  ((49, 228, 229), "\033[93m"),
+    'LightBlue':    ((251, 36, 11), "\033[94m"),
+    'LightMagenta': ((227, 35, 227), "\033[95m"),
+    'LightCyan':    ((228, 229, 39), "\033[96m"),
+    'White':        ((230, 229, 230), "\033[97m"),
 }
 
 
@@ -66,7 +47,7 @@ def prev(im_file, size):
             min_name = None
 
             for name in color_definitions:
-                value = color_definitions[name]
+                value = color_definitions[name][0]
                 d = dist(pixel, value)
                 if d < min_dist:
                     min_dist = d
@@ -75,12 +56,14 @@ def prev(im_file, size):
 
             # Add to color
             out_im[y,x] = min_value
-            out_str += coloring.color("█", color_chars[min_name])
+            out_str += coloring.color("█", color_definitions[min_name][1])
 
     return out_str
 
 
 if __name__ == "__main__":
+    import time
+    start = time.time()
     # Get size of the terminal
     import os
     try:
@@ -90,3 +73,5 @@ if __name__ == "__main__":
 
     pref_size = (w, h-2)
     print(prev("sample.png", pref_size))
+    duration = time.time() - start
+    print(f"{duration = }")
