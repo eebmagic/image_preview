@@ -30,17 +30,18 @@ def dist(a, b):
 
 def prev(im_file, size):
     w, h = size
-    assert type(im_file), str
     assert type(w), int
     assert type(h), int
 
     # Read and reshape image
-    load_start = time.time()
-    im = cv2.resize(cv2.imread(im_file), size)
+    if type(im_file) == str:
+        orig_im = cv2.imread(im_file)
+    else:
+        orig_im = im_file
+    im = cv2.resize(orig_im, size)
+
     out_im = im.copy()
     out_str = ""
-    load_durr = time.time() - load_start
-    print(f"{load_durr = }")
 
     iter_start = time.time()
     for y in range(len(im)):
@@ -61,6 +62,7 @@ def prev(im_file, size):
             # Add to color
             out_im[y,x] = min_value
             out_str += coloring.color("█", color_definitions[min_name][1])
+        out_str += "\n"
     iter_durr = time.time() - iter_start
     print(f"{iter_durr = }")
 
